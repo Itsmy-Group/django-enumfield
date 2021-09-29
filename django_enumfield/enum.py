@@ -1,7 +1,5 @@
 import logging
 
-from django.utils import six
-from django.utils.encoding import python_2_unicode_compatible
 
 from django_enumfield.db.fields import EnumField
 
@@ -24,10 +22,9 @@ class EnumType(type):
         return enum
 
 
-class Enum(six.with_metaclass(EnumType)):
+class Enum(metaclass=EnumType):
     """ A container for holding and restoring enum values """
 
-    @python_2_unicode_compatible
     class Value(object):
         """
         A value represents a key-value pair with a uppercase name and a integer value:
@@ -44,7 +41,7 @@ class Enum(six.with_metaclass(EnumType)):
             self.enum_type = enum_type
 
         def __str__(self):
-            return six.text_type(self.label)
+            return str(self.label)
 
         def __repr__(self):
             return self.name
@@ -52,7 +49,7 @@ class Enum(six.with_metaclass(EnumType)):
         def __eq__(self, other):
             if other and isinstance(other, Enum.Value):
                 return self.value == other.value
-            elif isinstance(other, six.string_types):
+            elif isinstance(other, str):
                 return type(other)(self.value) == other
             else:
                 raise TypeError('Can not compare Enum with %s' % other.__class__.__name__)
@@ -108,7 +105,7 @@ class Enum(six.with_metaclass(EnumType)):
         :type name_or_numeric: int or str
         :rtype: Enum.Value
         """
-        if isinstance(name_or_numeric, six.string_types):
+        if isinstance(name_or_numeric, str):
             name_or_numeric = getattr(cls, name_or_numeric.upper())
 
         return cls.values.get(name_or_numeric)
@@ -131,7 +128,7 @@ class Enum(six.with_metaclass(EnumType)):
         :return: label for value
         :rtype: str or
         """
-        return six.text_type(cls.get(numeric).label)
+        return str(cls.get(numeric).label)
 
     @classmethod
     def items(cls):
