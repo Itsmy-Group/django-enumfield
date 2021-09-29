@@ -46,6 +46,9 @@ class Enum(metaclass=EnumType):
         def __repr__(self):
             return self.name
 
+        def __hash__(self):
+            return self.value
+
         def __eq__(self, other):
             if other and isinstance(other, Enum.Value):
                 return self.value == other.value
